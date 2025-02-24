@@ -5,13 +5,61 @@ import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import FontFamily from '@tiptap/extension-font-family';
 import TextAlign from '@tiptap/extension-text-align';
+import Underline from '@tiptap/extension-underline';
+import { Extension } from '@tiptap/core';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { updateShape } from '@/store/slices/canvasSlice';
 import { setEditing } from '@/store/slices/toolSlice';
-import { toPng } from 'html-to-image';
+import html2canvas from 'html2canvas';
 import './TextEditor.scss';
 
-const FONT_SIZES = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 72];
+// Создаем расширение для размера шрифта
+const FontSize = Extension.create({
+  name: 'fontSize',
+
+  addAttributes() {
+    return {
+      size: {
+        default: '16px',
+        parseHTML: (element) => element.style.fontSize || '16px',
+        renderHTML: (attributes) => ({
+          style: `font-size: ${attributes.size}`,
+        }),
+      },
+    };
+  },
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: ['textStyle'],
+        attributes: {
+          fontSize: {
+            default: '16px',
+            parseHTML: (element) => element.style.fontSize,
+            renderHTML: (attributes) => ({
+              style: `font-size: ${attributes.fontSize}`,
+            }),
+          },
+        },
+      },
+    ];
+  },
+});
+
+const FONT_SIZES = [
+  '8px',
+  '10px',
+  '12px',
+  '14px',
+  '16px',
+  '18px',
+  '20px',
+  '24px',
+  '28px',
+  '32px',
+];
+
 const FONT_FAMILIES = [
   'Arial',
   'Times New Roman',
@@ -33,8 +81,10 @@ export const TextEditor: FC = () => {
     extensions: [
       StarterKit,
       TextStyle,
+      FontSize,
       Color,
       FontFamily,
+      Underline,
       TextAlign.configure({
         types: ['paragraph'],
         alignments: ['left', 'center', 'right'],
@@ -49,17 +99,28 @@ export const TextEditor: FC = () => {
   });
 
   const handleClose = useCallback(async () => {
-    if (!selectedShape || !editorRef.current) return;
+    if (!selectedShape || !editorRef.current || !editor) return;
 
     try {
-      // Конвертируем содержимое редактора в изображение
-      const dataUrl = await toPng(editorRef.current, {
-        backgroundColor: 'transparent',
+      const canvas = await html2canvas(editorRef.current, {
+        backgroundColor: null,
+        logging: false,
+        scale: 2,
+        useCORS: true,
+        onclone: (clonedDoc) => {
+          const style = clonedDoc.createElement('style');
+          style.innerHTML = `
+            * { font-family: ${editor.getAttributes('textStyle').fontFamily || 'Arial'} !important; }
+          `;
+          clonedDoc.head.appendChild(style);
+        },
       });
+
+      const dataUrl = canvas.toDataURL('image/png');
 
       const newShape = {
         ...selectedShape,
-        text: editor?.getHTML() || '',
+        text: editor.getHTML(),
         textImageUrl: dataUrl,
       };
 
@@ -86,14 +147,18 @@ export const TextEditor: FC = () => {
     <div className="text-editor">
       <div className="text-editor__toolbar">
         <select
-          value={editor.getAttributes('textStyle').fontSize || '16'}
-          onChange={(e) =>
-            editor.chain().focus().setFontSize(e.target.value).run()
-          }
+          value={editor.getAttributes('textStyle').fontSize || '16px'}
+          onChange={(e) => {
+            editor
+              .chain()
+              .focus()
+              .setMark('textStyle', { fontSize: e.target.value })
+              .run();
+          }}
         >
           {FONT_SIZES.map((size) => (
             <option key={size} value={size}>
-              {size}px
+              {size}
             </option>
           ))}
         </select>
@@ -123,6 +188,13 @@ export const TextEditor: FC = () => {
           className={editor.isActive('italic') ? 'is-active' : ''}
         >
           I
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          className={editor.isActive('underline') ? 'is-active' : ''}
+        >
+          U
         </button>
 
         <button
