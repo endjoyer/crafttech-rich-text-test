@@ -1,0 +1,146 @@
+@import '@/styles/variables';
+@import '@/styles/mixins';
+
+.shape {
+  &-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    padding: $spacing-xs;
+    font-family: inherit;
+    white-space: pre-wrap;
+    word-break: break-word;
+    pointer-events: none;
+    user-select: none;
+
+    // Default text styles that can be overridden by shape.textStyles
+    color: $text-color;
+    font-size: $font-size-base;
+    text-align: center;
+  }
+}
+
+// Styles for the shape when selected
+.selected-shape {
+  &::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 2px solid $primary-color;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+}
+
+// Transform handles for selected shape
+.transform-handle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border: 1px solid $primary-color;
+  border-radius: 50%;
+  pointer-events: all;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $primary-color;
+  }
+
+  // Positions for different handles
+  &-top-left {
+    top: -4px;
+    left: -4px;
+    cursor: nw-resize;
+  }
+  &-top-right {
+    top: -4px;
+    right: -4px;
+    cursor: ne-resize;
+  }
+  &-bottom-left {
+    bottom: -4px;
+    left: -4px;
+    cursor: sw-resize;
+  }
+  &-bottom-right {
+    bottom: -4px;
+    right: -4px;
+    cursor: se-resize;
+  }
+  &-top {
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: n-resize;
+  }
+  &-bottom {
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: s-resize;
+  }
+  &-left {
+    left: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: w-resize;
+  }
+  &-right {
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: e-resize;
+  }
+}
+
+// Rotation handle
+.rotation-handle {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border: 1px solid $primary-color;
+  border-radius: 50%;
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 1px;
+    height: 16px;
+    background-color: $primary-color;
+    transform: translateX(-50%);
+  }
+
+  &:hover {
+    background-color: $primary-color;
+  }
+}
+
+// Animation for shape selection
+@keyframes shape-selected {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.shape-selected {
+  animation: shape-selected 0.2s ease-in-out;
+}

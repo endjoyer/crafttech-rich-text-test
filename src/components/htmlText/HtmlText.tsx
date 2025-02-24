@@ -1,19 +1,21 @@
-import { forwardRef } from "react";
+import { ForwardedRef, forwardRef } from 'react';
 
-const HtmlText = forwardRef(({ html, id }: any, ref: any) => {
-  return (
-    <div
-      id={`htmltext_${id}`}
-      dangerouslySetInnerHTML={{ __html: html }}
-      style={{
-        position: "fixed",
-        overflow: "hidden",
-        left: "100000px",
-        top: "100000px",
-      }}
-      ref={ref}
-    ></div>
-  );
-});
+interface HtmlTextProps {
+  html: string;
+  id: string;
+}
 
-export default HtmlText;
+export const HtmlText = forwardRef(
+  ({ html, id }: HtmlTextProps, ref: ForwardedRef<HTMLDivElement>) => {
+    return (
+      <div
+        id={`htmltext_${id}`}
+        dangerouslySetInnerHTML={{ __html: html }}
+        className="html-text"
+        ref={ref}
+      />
+    );
+  }
+);
+
+HtmlText.displayName = 'HtmlText';

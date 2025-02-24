@@ -1,45 +1,81 @@
-import { useState } from "react";
-import { Layer, Stage } from "react-konva";
-import Shape from "../shape/Shape";
+import { FC, useRef, useEffect } from 'react';
+import { Stage, Layer } from 'react-konva';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import {
+  addShape,
+  updateStagePosition,
+  setSelectedShape,
+} from '@/store/slices/canvasSlice';
+import { Shape } from '@/components/Shape/Shape';
+import { createShape } from '@/utils/shapes';
+import { KonvaEventObject } from 'konva/lib/Node';
+import { Point } from '@/types/canvas';
+import { useWindowSize } from '@/hooks/useWindowSize';
+import './Canvas.scss';
 
-const Canvas = ({ tool, stageRef }: any) => {
-  const [figures, setFigures] = useState<any>([]);
+export const Canvas: FC = () => {
+  const dispatch = useAppDispatch();
+  const stageRef = useRef<any>(null);
+  const { shapes, stagePosition } = useAppSelector((state) => state.canvas);
+  const { currentTool } = useAppSelector((state) => state.tool);
+  const windowSize = useWindowSize();
 
-  const handleOnClick = (e: any) => {
-    if (tool === "cursor") return;
+  const handleStageClick = (e: KonvaEventObject<MouseEvent>) => {
+    // Если кликнули по пустому месту, снимаем выделение
+    if (e.target === e.target.getStage()) {
+      dispatch(setSelectedShape(null));
+    }
+  };
+
+  const handleClick = (e: KonvaEventObject<MouseEvent>) => {
+    if (currentTool !== 'shape') return;
+
     const stage = e.target.getStage();
+    if (!stage) return;
+
+    const position = stage.getPointerPosition();
+    if (!position) return;
+
     const stageOffset = stage.absolutePosition();
-    const point = stage.getPointerPosition();
-    setFigures((prev: any) => [
-      ...prev,
-      {
-        id: Date.now().toString(36),
-        width: 100,
-        height: 100,
-        type: "rect",
-        x: point.x - stageOffset.x,
-        y: point.y - stageOffset.y,
-        html: "",
-        text: "",
-      },
-    ]);
+    const point: Point = {
+      x: position.x - stageOffset.x,
+      y: position.y - stageOffset.y,
+    };
+
+    dispatch(addShape(createShape(point)));
+  };
+
+  const handleDragEnd = (e: KonvaEventObject<DragEvent>) => {
+    const stage = e.target.getStage();
+    if (!stage) return;
+
+    dispatch(
+      updateStagePosition({
+        x: stage.x(),
+        y: stage.y(),
+      })
+    );
   };
 
   return (
-    <Stage
-      width={window.innerWidth}
-      height={window.innerHeight}
-      draggable={tool === "cursor"}
-      onClick={handleOnClick}
-      ref={stageRef}
-    >
-      <Layer>
-        {figures.map((figure: any, i: number) => {
-          return <Shape key={i} {...figure} stageRef={stageRef} tool={tool} />;
-        })}
-      </Layer>
-    </Stage>
+    <div className="canvas-container">
+      <Stage
+        width={windowSize.width}
+        height={windowSize.height}
+        draggable={currentTool === 'cursor'}
+        onClick={handleClick}
+        onDragEnd={handleDragEnd}
+        onMouseDown={handleStageClick}
+        ref={stageRef}
+        x={stagePosition.x}
+        y={stagePosition.y}
+      >
+        <Layer>
+          {shapes.map((shape) => (
+            <Shape key={shape.id} shape={shape} />
+          ))}
+        </Layer>
+      </Stage>
+    </div>
   );
 };
-
-export default Canvas;

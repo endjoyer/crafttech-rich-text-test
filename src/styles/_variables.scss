@@ -1,0 +1,43 @@
+// Colors
+$primary-color: #2196f3;
+$secondary-color: #f50057;
+$background-color: #fafafa;
+$text-color: #333333;
+$border-color: #e0e0e0;
+
+// Typography
+$font-family-base:
+  'Roboto',
+  -apple-system,
+  BlinkMacSystemFont,
+  sans-serif;
+$font-size-base: 16px;
+$font-size-small: 14px;
+$font-size-large: 18px;
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+// Breakpoints
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// Z-index
+$z-index-canvas: 1;
+$z-index-controls: 10;
+$z-index-modal: 100;
+
+// Transitions
+$transition-duration: 0.2s;
+$transition-timing: ease-in-out;
+
+// Shadows
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);

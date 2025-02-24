@@ -1,35 +1,36 @@
-const Control = ({ tool, setTool }: any) => {
-  const handleOnChange = (e: any) => {
-    setTool(e.target.value);
+import { FC } from 'react';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { setTool } from '@/store/slices/toolSlice';
+import { Tool } from '@/types/canvas';
+import './Control.scss';
+
+export const Control: FC = () => {
+  const dispatch = useAppDispatch();
+  const currentTool = useAppSelector((state) => state.tool.currentTool);
+
+  const handleToolChange = (tool: Tool) => {
+    dispatch(setTool(tool));
   };
 
   return (
-    <div style={{ position: "absolute", top: 0 }}>
-      <div>
-        <input
-          type="radio"
-          id="cursor"
-          name="control"
-          value="cursor"
-          checked={tool === "cursor"}
-          onChange={handleOnChange}
-        />
-        <label htmlFor="cursor">Взаимодействие</label>
-      </div>
+    <div className="control">
+      <div className="control__group">
+        <button
+          className={`control__button ${currentTool === 'cursor' ? 'control__button--active' : ''}`}
+          onClick={() => handleToolChange('cursor')}
+        >
+          <span className="control__icon">🖱️</span>
+          <span className="control__label">Взаимодействие</span>
+        </button>
 
-      <div>
-        <input
-          type="radio"
-          id="shape"
-          name="control"
-          value="shape"
-          checked={tool === "shape"}
-          onChange={handleOnChange}
-        />
-        <label htmlFor="shape">Добавление</label>
+        <button
+          className={`control__button ${currentTool === 'shape' ? 'control__button--active' : ''}`}
+          onClick={() => handleToolChange('shape')}
+        >
+          <span className="control__icon">➕</span>
+          <span className="control__label">Добавление</span>
+        </button>
       </div>
     </div>
   );
 };
-
-export default Control;
