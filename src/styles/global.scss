@@ -1,5 +1,5 @@
-@import 'variables';
-@import 'mixins';
+@use '_variables.scss' as *;
+@use '_mixins.scss' as *;
 
 *,
 *::before,

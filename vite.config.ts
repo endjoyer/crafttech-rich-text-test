@@ -4,19 +4,10 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `
-          @use "sass:math";
-          @import "@/styles/variables";
-          @import "@/styles/mixins";
-        `,
+        api: 'modern-compiler',
       },
     },
   },
