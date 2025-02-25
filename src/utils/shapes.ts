@@ -1,43 +1,39 @@
-import { Shape, Point } from '@/types/canvas';
+import { Shape, Point, ShapeType } from '@/types/canvas';
+import {
+  DEFAULT_SHAPE_SIZE,
+  DEFAULT_FONT_SIZE,
+  DEFAULT_FONT_FAMILY,
+  DEFAULT_TEXT_COLOR,
+  DEFAULT_SHAPE_FILL,
+  DEFAULT_SHAPE_STROKE,
+  DEFAULT_SHAPE_STROKE_WIDTH,
+} from '@/constants/canvas';
 
 export const generateId = (): string => {
   return Date.now().toString(36) + Math.random().toString(36).substring(2);
 };
 
-export const createShape = (
-  point: Point,
-  type: Shape['type'] = 'rect'
-): Shape => {
+export const createShape = (point: Point, type: ShapeType = 'rect'): Shape => {
   return {
     id: generateId(),
     type,
     x: point.x,
     y: point.y,
-    width: 200,
-    height: 100,
+    width: DEFAULT_SHAPE_SIZE,
+    height: DEFAULT_SHAPE_SIZE / 2.5,
+    rotation: 0,
     styles: {
-      fill: '#ffffff',
-      stroke: '#000000',
-      strokeWidth: 2,
+      fill: DEFAULT_SHAPE_FILL,
+      stroke: DEFAULT_SHAPE_STROKE,
+      strokeWidth: DEFAULT_SHAPE_STROKE_WIDTH,
     },
     text: '',
     textStyles: {
-      fontSize: 16,
-      fontFamily: 'Roboto',
-      fill: '#000000',
+      fontSize: DEFAULT_FONT_SIZE,
+      fontFamily: DEFAULT_FONT_FAMILY,
+      fill: DEFAULT_TEXT_COLOR,
       align: 'center',
     },
-    textPosition: {
-      x: 0,
-      y: 0,
-    },
-  };
-};
-
-export const calculateTextPosition = (shape: Shape): Point => {
-  return {
-    x: shape.width / 2,
-    y: shape.height / 2,
   };
 };
 

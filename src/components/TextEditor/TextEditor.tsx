@@ -1,4 +1,4 @@
-import { FC, useCallback, useRef } from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TextStyle from '@tiptap/extension-text-style';
@@ -12,8 +12,17 @@ import { updateShape } from '@/store/slices/canvasSlice';
 import { setEditing } from '@/store/slices/toolSlice';
 import html2canvas from 'html2canvas';
 import './TextEditor.scss';
+import {
+  AVAILABLE_FONTS,
+  DEFAULT_FONT_FAMILY,
+  DEFAULT_SHAPE_STROKE_WIDTH,
+  DEFAULT_TEXT_COLOR,
+} from '@/constants/canvas';
 
-// Создаем расширение для размера шрифта
+interface FontSizeAttributes {
+  size: string;
+}
+
 const FontSize = Extension.create({
   name: 'fontSize',
 
@@ -21,8 +30,8 @@ const FontSize = Extension.create({
     return {
       size: {
         default: '16px',
-        parseHTML: (element) => element.style.fontSize || '16px',
-        renderHTML: (attributes) => ({
+        parseHTML: (element: HTMLElement) => element.style.fontSize || '16px',
+        renderHTML: (attributes: FontSizeAttributes) => ({
           style: `font-size: ${attributes.size}`,
         }),
       },
@@ -36,7 +45,7 @@ const FontSize = Extension.create({
         attributes: {
           fontSize: {
             default: '16px',
-            parseHTML: (element) => element.style.fontSize,
+            parseHTML: (element: HTMLElement) => element.style.fontSize,
             renderHTML: (attributes) => ({
               style: `font-size: ${attributes.fontSize}`,
             }),
@@ -60,22 +69,42 @@ const FONT_SIZES = [
   '32px',
 ];
 
-const FONT_FAMILIES = [
-  'Arial',
-  'Times New Roman',
-  'Courier New',
-  'Georgia',
-  'Verdana',
-];
-
 export const TextEditor: FC = () => {
   const dispatch = useAppDispatch();
   const editorRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   const selectedShape = useAppSelector((state) => {
     const id = state.canvas.selectedShapeId;
     return state.canvas.shapes.find((shape) => shape.id === id);
   });
+
+  const scale = useAppSelector((state) => state.canvas.scale);
+  const stagePosition = useAppSelector((state) => state.canvas.stagePosition);
+
+  useEffect(() => {
+    if (selectedShape) {
+      const stageEl = document.querySelector('.konvajs-content');
+      if (stageEl) {
+        const stageRect = stageEl.getBoundingClientRect();
+
+        const scaledX = selectedShape.x * scale;
+        const scaledY = selectedShape.y * scale;
+        const scaledWidth = selectedShape.width * scale;
+        const scaledHeight = selectedShape.height * scale;
+
+        setPosition({
+          x: stageRect.left + scaledX + stagePosition.x,
+          y: stageRect.top + scaledY + stagePosition.y,
+        });
+        setDimensions({
+          width: scaledWidth,
+          height: scaledHeight,
+        });
+      }
+    }
+  }, [selectedShape, scale, stagePosition]);
 
   const editor = useEditor({
     extensions: [
@@ -105,12 +134,12 @@ export const TextEditor: FC = () => {
       const canvas = await html2canvas(editorRef.current, {
         backgroundColor: null,
         logging: false,
-        scale: 2,
+        scale: DEFAULT_SHAPE_STROKE_WIDTH,
         useCORS: true,
         onclone: (clonedDoc) => {
           const style = clonedDoc.createElement('style');
           style.innerHTML = `
-            * { font-family: ${editor.getAttributes('textStyle').fontFamily || 'Arial'} !important; }
+            * { font-family: ${editor.getAttributes('textStyle').fontFamily || DEFAULT_FONT_FAMILY} !important; }
           `;
           clonedDoc.head.appendChild(style);
         },
@@ -144,7 +173,7 @@ export const TextEditor: FC = () => {
   if (!selectedShape || !editor) return null;
 
   return (
-    <div className="text-editor">
+    <>
       <div className="text-editor__toolbar">
         <select
           value={editor.getAttributes('textStyle').fontSize || '16px'}
@@ -164,12 +193,14 @@ export const TextEditor: FC = () => {
         </select>
 
         <select
-          value={editor.getAttributes('textStyle').fontFamily || 'Arial'}
+          value={
+            editor.getAttributes('textStyle').fontFamily || DEFAULT_FONT_FAMILY
+          }
           onChange={(e) =>
             editor.chain().focus().setFontFamily(e.target.value).run()
           }
         >
-          {FONT_FAMILIES.map((font) => (
+          {AVAILABLE_FONTS.map((font) => (
             <option key={font} value={font}>
               {font}
             </option>
@@ -222,7 +253,7 @@ export const TextEditor: FC = () => {
 
         <input
           type="color"
-          value={editor.getAttributes('textStyle').color || '#000000'}
+          value={editor.getAttributes('textStyle').color || DEFAULT_TEXT_COLOR}
           onChange={(e) =>
             editor.chain().focus().setColor(e.target.value).run()
           }
@@ -231,11 +262,29 @@ export const TextEditor: FC = () => {
         <button className="text-editor__close" onClick={handleClose}>
           Применить
         </button>
-      </div>
 
-      <div className="text-editor__container" ref={editorRef}>
-        <EditorContent editor={editor} onChange={updateContent} />
+        <button
+          className="text-editor__header-close"
+          onClick={() => dispatch(setEditing(false))}
+        >
+          ×
+        </button>
       </div>
-    </div>
+      <div
+        className="text-editor"
+        style={{
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+          width: `${dimensions.width}px`,
+          height: `${dimensions.height}px`,
+          transform: `scale(1)`,
+          transformOrigin: 'top left',
+        }}
+      >
+        <div className="text-editor__container" ref={editorRef}>
+          <EditorContent editor={editor} onChange={updateContent} />
+        </div>
+      </div>
+    </>
   );
 };

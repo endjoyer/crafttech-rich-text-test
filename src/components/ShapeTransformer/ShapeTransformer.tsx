@@ -1,25 +1,25 @@
 import { FC, useEffect, useRef } from 'react';
 import { Transformer } from 'react-konva';
+import Konva from 'konva';
 
 interface ShapeTransformerProps {
-  shapeRef: React.RefObject<any>;
+  shapeRef: React.RefObject<Konva.Group>;
 }
 
 export const ShapeTransformer: FC<ShapeTransformerProps> = ({ shapeRef }) => {
-  const transformerRef = useRef<any>(null);
+  const transformerRef = useRef<Konva.Transformer>(null);
 
   useEffect(() => {
     if (!transformerRef.current || !shapeRef.current) return;
 
     transformerRef.current.nodes([shapeRef.current]);
-    transformerRef.current.getLayer().batchDraw();
+    transformerRef.current.getLayer()?.batchDraw();
   }, [shapeRef]);
 
   return (
     <Transformer
       ref={transformerRef}
       boundBoxFunc={(oldBox, newBox) => {
-        // Минимальные размеры фигуры
         const minWidth = 20;
         const minHeight = 20;
 

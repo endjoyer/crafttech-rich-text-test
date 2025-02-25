@@ -1,4 +1,4 @@
-import { FC, useRef, useCallback } from 'react';
+import { FC, useRef, useCallback, useEffect } from 'react';
 import { Group, Rect, Text, Image, Transformer } from 'react-konva';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { setSelectedShape, updateShape } from '@/store/slices/canvasSlice';
@@ -9,6 +9,7 @@ import useImage from 'use-image';
 import { ShapeTransformer } from '../ShapeTransformer/ShapeTransformer';
 import { snapToGrid } from '@/utils/shapes';
 import './Shape.scss';
+import Konva from 'konva';
 
 interface ShapeProps {
   shape: ShapeType;
@@ -16,13 +17,37 @@ interface ShapeProps {
 
 export const Shape: FC<ShapeProps> = ({ shape }) => {
   const dispatch = useAppDispatch();
-  const groupRef = useRef<any>(null);
+  const groupRef = useRef<Konva.Group>(null);
+  const textRef = useRef<Konva.Image>(null);
   const currentTool = useAppSelector((state) => state.tool.currentTool);
   const selectedShapeId = useAppSelector(
     (state) => state.canvas.selectedShapeId
   );
   const isSelected = shape.id === selectedShapeId;
   const [textImage] = useImage(shape.textImageUrl || '');
+
+  useEffect(() => {
+    if (textImage && groupRef.current) {
+      const aspectRatio = textImage.width / textImage.height;
+      let newWidth = shape.width - 20;
+      let newHeight = newWidth / aspectRatio;
+
+      if (newHeight > shape.height - 20) {
+        newHeight = shape.height - 20;
+        newWidth = newHeight * aspectRatio;
+      }
+
+      if (newWidth > shape.width - 20 || newHeight > shape.height - 20) {
+        dispatch(
+          updateShape({
+            ...shape,
+            width: Math.max(shape.width, newWidth + 40),
+            height: Math.max(shape.height, newHeight + 40),
+          })
+        );
+      }
+    }
+  }, [textImage, shape, dispatch]);
 
   const handleClick = useCallback(
     (e: KonvaEventObject<MouseEvent>) => {
@@ -102,11 +127,13 @@ export const Shape: FC<ShapeProps> = ({ shape }) => {
 
         {shape.textImageUrl && textImage ? (
           <Image
+            ref={textRef}
             image={textImage}
             width={shape.width - 20}
             height={shape.height - 20}
             x={10}
             y={10}
+            listening={false}
           />
         ) : shape.text ? (
           <Text
@@ -120,6 +147,8 @@ export const Shape: FC<ShapeProps> = ({ shape }) => {
             fill={shape.textStyles.fill}
             align={shape.textStyles.align}
             verticalAlign="middle"
+            wrap="word"
+            listening={false}
           />
         ) : null}
       </Group>

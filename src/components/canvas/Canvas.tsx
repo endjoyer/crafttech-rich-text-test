@@ -1,27 +1,28 @@
-import { FC, useRef, useEffect } from 'react';
+import { FC, useRef } from 'react';
 import { Stage, Layer } from 'react-konva';
+import Konva from 'konva';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import {
   addShape,
   updateStagePosition,
   setSelectedShape,
+  updateScale,
 } from '@/store/slices/canvasSlice';
 import { Shape } from '@/components/Shape/Shape';
 import { createShape } from '@/utils/shapes';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { Point } from '@/types/canvas';
+import { Point, Shape as ShapeType } from '@/types/canvas';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import './Canvas.scss';
 
 export const Canvas: FC = () => {
   const dispatch = useAppDispatch();
-  const stageRef = useRef<any>(null);
+  const stageRef = useRef<Konva.Stage>(null);
   const { shapes, stagePosition } = useAppSelector((state) => state.canvas);
   const { currentTool } = useAppSelector((state) => state.tool);
   const windowSize = useWindowSize();
 
   const handleStageClick = (e: KonvaEventObject<MouseEvent>) => {
-    // Если кликнули по пустому месту, снимаем выделение
     if (e.target === e.target.getStage()) {
       dispatch(setSelectedShape(null));
     }
@@ -38,8 +39,8 @@ export const Canvas: FC = () => {
 
     const stageOffset = stage.absolutePosition();
     const point: Point = {
-      x: position.x - stageOffset.x,
-      y: position.y - stageOffset.y,
+      x: (position.x - stageOffset.x) / stage.scaleX(),
+      y: (position.y - stageOffset.y) / stage.scaleY(),
     };
 
     dispatch(addShape(createShape(point)));
@@ -57,6 +58,35 @@ export const Canvas: FC = () => {
     );
   };
 
+  const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
+    e.evt.preventDefault();
+
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const oldScale = stage.scaleX();
+    const pointer = stage.getPointerPosition();
+    if (!pointer) return;
+
+    const mousePointTo = {
+      x: (pointer.x - stage.x()) / oldScale,
+      y: (pointer.y - stage.y()) / oldScale,
+    };
+
+    const newScale = e.evt.deltaY > 0 ? oldScale * 0.9 : oldScale * 1.1;
+
+    stage.scale({ x: newScale, y: newScale });
+
+    const newPos = {
+      x: pointer.x - mousePointTo.x * newScale,
+      y: pointer.y - mousePointTo.y * newScale,
+    };
+
+    stage.position(newPos);
+    stage.batchDraw();
+    dispatch(updateScale(newScale));
+  };
+
   return (
     <div className="canvas-container">
       <Stage
@@ -66,12 +96,13 @@ export const Canvas: FC = () => {
         onClick={handleClick}
         onDragEnd={handleDragEnd}
         onMouseDown={handleStageClick}
+        onWheel={handleWheel}
         ref={stageRef}
         x={stagePosition.x}
         y={stagePosition.y}
       >
         <Layer>
-          {shapes.map((shape) => (
+          {shapes.map((shape: ShapeType) => (
             <Shape key={shape.id} shape={shape} />
           ))}
         </Layer>
