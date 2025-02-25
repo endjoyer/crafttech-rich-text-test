@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Shape, Point } from '@/types/canvas';
+import { Shape, Point } from '../../types/canvas';
 
 interface CanvasState {
   shapes: Shape[];
@@ -24,7 +24,7 @@ const canvasSlice = createSlice({
     },
     updateShape: (state, action: PayloadAction<Shape>) => {
       const index = state.shapes.findIndex(
-        (shape) => shape.id === action.payload.id
+        (shape: Shape) => shape.id === action.payload.id
       );
       if (index !== -1) {
         state.shapes[index] = action.payload;

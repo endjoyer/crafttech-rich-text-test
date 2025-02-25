@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { setTool } from '@/store/slices/toolSlice';
-import { Tool } from '@/types/canvas';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { setTool } from '../../store/slices/toolSlice';
+import { Tool } from '../../types/canvas';
 import './Control.scss';
 
 export const Control: FC = () => {

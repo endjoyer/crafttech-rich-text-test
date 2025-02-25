@@ -7,9 +7,9 @@ import FontFamily from '@tiptap/extension-font-family';
 import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 import { Extension } from '@tiptap/core';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { updateShape } from '@/store/slices/canvasSlice';
-import { setEditing } from '@/store/slices/toolSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { updateShape } from '../../store/slices/canvasSlice';
+import { setEditing } from '../../store/slices/toolSlice';
 import html2canvas from 'html2canvas';
 import './TextEditor.scss';
 import {
@@ -17,7 +17,7 @@ import {
   DEFAULT_FONT_FAMILY,
   DEFAULT_SHAPE_STROKE_WIDTH,
   DEFAULT_TEXT_COLOR,
-} from '@/constants/canvas';
+} from '../../constants/canvas';
 
 interface FontSizeAttributes {
   size: string;

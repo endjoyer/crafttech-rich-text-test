@@ -1,17 +1,17 @@
 import { FC, useRef } from 'react';
 import { Stage, Layer } from 'react-konva';
 import Konva from 'konva';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
   addShape,
   updateStagePosition,
   updateScale,
-} from '@/store/slices/canvasSlice';
-import { Shape } from '@/components/Shape/Shape.tsx';
-import { createShape } from '@/utils/shapes';
+} from '../../store/slices/canvasSlice';
+import { Shape } from '../../components/Shape/Shape.tsx';
+import { createShape } from '../../utils/shapes';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { Point, Shape as ShapeType } from '@/types/canvas';
-import { useWindowSize } from '@/hooks/useWindowSize';
+import { Point, Shape as ShapeType } from '../../types/canvas';
+import { useWindowSize } from '../../hooks/useWindowSize';
 import './Canvas.scss';
 
 export const Canvas: FC = () => {
