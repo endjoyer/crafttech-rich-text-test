@@ -1,5 +1,5 @@
 import { FC, useRef, useCallback, useEffect } from 'react';
-import { Group, Rect, Text, Image, Transformer } from 'react-konva';
+import { Group, Rect, Text, Image } from 'react-konva';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { setSelectedShape, updateShape } from '@/store/slices/canvasSlice';
 import { setEditing } from '@/store/slices/toolSlice';
