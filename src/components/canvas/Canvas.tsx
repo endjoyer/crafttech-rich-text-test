@@ -7,7 +7,7 @@ import {
   updateStagePosition,
   updateScale,
 } from '../../store/slices/canvasSlice';
-import { Shape } from '../Shape/Shape';
+import { Shape } from '../shape/Shape';
 import { createShape } from '../../utils/shapes';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Point, Shape as ShapeType } from '../../types/canvas';

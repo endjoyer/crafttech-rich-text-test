@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { Canvas } from './components/Canvas/Canvas';
-import { Control } from './components/Control/Control';
-import { TextEditor } from './components/TextEditor/TextEditor';
-import { useAppSelector } from './hooks/redux';
+import { Canvas } from './components/canvas/Canvas.tsx';
+import { Control } from './components/control/Control.tsx';
+import { TextEditor } from './components/textEditor/TextEditor.tsx';
+import { useAppSelector } from './hooks/redux.ts';
 import './styles/App.scss';
 
 const App: FC = () => {

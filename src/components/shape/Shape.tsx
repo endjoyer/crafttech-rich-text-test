@@ -6,7 +6,7 @@ import { setEditing } from '../../store/slices/toolSlice';
 import { Shape as ShapeType } from '../../types/canvas';
 import { KonvaEventObject } from 'konva/lib/Node';
 import useImage from 'use-image';
-import { ShapeTransformer } from '../ShapeTransformer/ShapeTransformer';
+import { ShapeTransformer } from '../shapeTransformer/ShapeTransformer';
 import { snapToGrid } from '../../utils/shapes';
 import './Shape.scss';
 import Konva from 'konva';
