@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import { Canvas } from './components/Canvas/Canvas';
-import { Control } from './components/Control/Control';
-import { TextEditor } from './components/TextEditor/TextEditor';
+import { Canvas } from './components/Canvas/Canvas.tsx';
+import { Control } from './components/Control/Control.tsx';
+import { TextEditor } from './components/TextEditor/TextEditor.tsx';
 import { useAppSelector } from './hooks/redux';
 import './styles/App.scss';
 
