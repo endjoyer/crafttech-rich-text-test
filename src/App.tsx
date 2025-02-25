@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Canvas } from './components/canvas/Canvas.tsx';
 import { Control } from './components/control/Control.tsx';
-// import { TextEditor } from './components/textEditor/TextEditor.tsx';
+import { TextEditor } from './components/textEditor/TextEditor.tsx';
 import { useAppSelector } from './hooks/redux.ts';
 import './styles/App.scss';
 
@@ -12,7 +12,7 @@ const App: FC = () => {
     <div className="app">
       <Canvas />
       <Control />
-      {/* {isEditing && <TextEditor />} */}
+      {isEditing && <TextEditor />}
     </div>
   );
 };
