@@ -5,14 +5,12 @@
   position: relative;
   overflow: hidden;
 
-  // Добавляем сетку на канвас
   background-image:
     linear-gradient(to right, var(--border-color) 1px, transparent 1px),
     linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
-// Стили для выделенной фигуры
 .selected-shape {
   box-shadow: 0 0 0 2px var(--primary-color);
 }

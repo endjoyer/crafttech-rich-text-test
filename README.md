@@ -1,43 +1,81 @@
-# Тестовое задание на позицию middle frontend-разработчик
+# Canvas Text Editor
 
-Проект представляет из себя canvas элемент во всю ширину экрана построенного с помощью библиотек konva и react-konva.
+A powerful React-based canvas editor that allows users to create, manipulate and style text and shapes on a canvas element. Built with React, TypeScript, and Konva.
 
-Есть две кнопки:
+## 🚀 Features
 
-1. Взаимодействие - можно двигать как фигуры, так и сам канвас. А также по клику на фигуру открывается/закрывается текстовое поле ввода
-2. Добавление - по клику добавляется новая фигура
+- **Interactive Canvas**: Pan, zoom and manipulate the canvas workspace
+- **Shape Management**:
+  - Add and move shapes freely
+  - Resize and transform shapes
+  - Snap-to-grid functionality
+  - Customizable shape properties (color, border, etc.)
+- **Rich Text Editor**:
+  - Full text formatting capabilities
+  - Support for multiple fonts
+  - Color picker for text
+  - Text styling (bold, italic, underline)
+  - Text alignment options
+  - Font size control
+- **Real-time Preview**: See your text changes instantly
+- **Export Capabilities**: Convert text to images while preserving styles
+- **Responsive Design**: Works across different screen sizes
 
-### Что необходимо сделать:
+## 🛠 Tech Stack
 
-1. Добавить стили для компонентов
-2. Типизировать проект
-3. Добавить текстовый редактор. При открытом поле ввода должно появляться меню, позволяющее изменить текст (сделать жирным, поменять размер шрифта, цвет и т.п.). После закрытия поля ввода, введеный текст должен отобразиться на канвасе как картинка в том же месте фигуры, сохранив при этом все стили.
+- React 18
+- TypeScript
+- Redux Toolkit
+- Konva.js
+- TipTap
+- SCSS
+- Vite
 
-### Также приветствуется, но необязательно:
+## 📦 Installation
 
-1. Улучшить архитектуру приложения
-2. Оптимизировать приложение
-3. Добавить в меню фигуры кнопку, позволяющую изменить любое свойство фигуры (форму, цвет фона, цвет контура и т.п.)
+1. Clone the repository:
 
-### Что можно:
+```bash
+git clone https://github.com/endjoyer/crafttech-rich-text-test.git
+```
 
-1. Изменять код как угодно, в том числе полностью собрать свой проект
-2. Использовать любые библиотеки. Для редактора текста они понадобятся
-3. Изменять интерфейс, способ добавления фигур, их начальные параметры и т.д.
-4. Добавлять любой функционал по желанию
+2. Install dependencies:
 
-### Что должно быть обязательно:
+```bash
+cd canvas-text-editor npm install
+```
 
-1. Сохранение текущего функционала. Перемещение канваса, фигур и ввод текста должны быть обязательно
-2. Использовать препроцессор sass/scss
-3. Проект не должен содержать any
-4. Проект должен билдиться
+3. Start the development server:
 
-### Как начать:
+```bash
+npm run dev
+```
 
-1. Сделать форк репозитория
-2. npm install - установка зависимостей
-3. npm run dev - режим разработки
-4. npm run build - сборка
+## 🔧 Available Scripts
 
-**Ждем ваших решений, желаю удачи!**
+- `npm run dev` - Starts development server
+- `npm run build` - Creates production build
+- `npm run lint` - Runs ESLint
+- `npm run preview` - Previews production build
+- `npm run format` - Formats code using Prettier
+
+## 🏗 Project Structure
+
+```md
+src/  
+├── components/ — React components  
+├── store/ — Redux store and slices  
+├── hooks/ — Custom React hooks  
+├── types/ — TypeScript type definitions  
+├── utils/ — Utility functions  
+├── styles/ — SCSS styles  
+└── assets/ — Static assets
+```
+
+## 🎨 Usage
+
+1. Use the cursor tool (🖱️) to interact with shapes and canvas
+2. Use the add tool (➕) to create new shapes
+3. Click on any shape to open the text editor
+4. Use the toolbar to style your text
+5. Click outside to save changes

@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import {
   addShape,
   updateStagePosition,
-  setSelectedShape,
   updateScale,
 } from '@/store/slices/canvasSlice';
 import { Shape } from '@/components/Shape/Shape';
@@ -21,12 +20,6 @@ export const Canvas: FC = () => {
   const { shapes, stagePosition } = useAppSelector((state) => state.canvas);
   const { currentTool } = useAppSelector((state) => state.tool);
   const windowSize = useWindowSize();
-
-  const handleStageClick = (e: KonvaEventObject<MouseEvent>) => {
-    if (e.target === e.target.getStage()) {
-      dispatch(setSelectedShape(null));
-    }
-  };
 
   const handleClick = (e: KonvaEventObject<MouseEvent>) => {
     if (currentTool !== 'shape') return;
@@ -95,7 +88,6 @@ export const Canvas: FC = () => {
         draggable={currentTool === 'cursor'}
         onClick={handleClick}
         onDragEnd={handleDragEnd}
-        onMouseDown={handleStageClick}
         onWheel={handleWheel}
         ref={stageRef}
         x={stagePosition.x}
