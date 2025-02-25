@@ -1,4 +1,4 @@
-import { Shape, Point, ShapeType } from '@/types/canvas';
+import { Shape, Point, ShapeType } from '../types/canvas';
 import {
   DEFAULT_SHAPE_SIZE,
   DEFAULT_FONT_SIZE,
@@ -7,7 +7,7 @@ import {
   DEFAULT_SHAPE_FILL,
   DEFAULT_SHAPE_STROKE,
   DEFAULT_SHAPE_STROKE_WIDTH,
-} from '@/constants/canvas';
+} from '../constants/canvas';
 
 export const generateId = (): string => {
   return Date.now().toString(36) + Math.random().toString(36).substring(2);
